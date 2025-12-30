@@ -1,0 +1,38 @@
+adapters: {
+  telegram
+  instagram
+  twitter
+}
+
+src: {
+  app: {
+    telegram-bot-entrypoint
+    # TODO: web
+  }
+
+  social-media-account: {
+    controller
+    service
+    repository
+  }
+
+  publication: {
+    controller
+    service
+    social-media-client-port
+    repository
+  }
+}
+
+src.app.telegram-bot-entrypoint -> src.social-media-account.controller
+src.app.telegram-bot-entrypoint -> src.publication.controller
+
+src.social-media-account.controller -> src.social-media-account.service
+src.social-media-account.service -> src.social-media-account.repository
+
+src.publication.controller -> src.social-media-account.controller # TODO: fix it; need event bus
+src.publication.controller -> src.publication.service
+src.publication.service -> src.publication.repository
+src.publication.service -> src.publication.social-media-client-port
+
+adapters -> src.publication.social-media-client-port
